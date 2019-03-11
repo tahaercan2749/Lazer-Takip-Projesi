@@ -1,0 +1,33 @@
+#include <Servo.h>
+ 
+char tilt_kimlik=0, pan_kimlik=1;
+char val;
+Servo panservo;
+Servo tiltservo;
+int pan_pin = 8;///yatay eksen
+int tilt_pin = 9;///dikey eksen
+char pan,tilt;
+int pan_derece, tilt_derece;
+void setup(){
+Serial.begin(57600);
+panservo.attach(pan_pin);
+tiltservo.attach(tilt_pin);
+panservo.write(90);
+tiltservo.write(90);
+}
+ 
+void loop(){
+while(Serial.available() <=0); //Seri bağlantı noktasında bir karakter bekle.
+val = Serial.read(); //Seri bağlantı noktasından karakteri değişkene kopyala
+if(val == tilt_kimlik){ //Karakterin tilt servo kimliği olup olmadığını kontrol et
+while(Serial.available() <=0); //Seri bağlantı noktasından ikinci komut baytını bekle.
+tilt_derece=Serial.read();//Seri bağlantı noktasından karakteri değişkene kopyala
+tiltservo.write(tilt_derece); //Tilt servo konumunu, seri porttan alınan ikinci komut baytının değerine ayarla.
+}
+else if(val == pan_kimlik){ //İlk seri karakterin pan servo için servo kimliği olup olmadığını kontrol et.
+while(Serial.available() <= 0); //Seri bağlantı noktasından ikinci komut baytını bekle.
+pan_derece=Serial.read(); //Seri bağlantı noktasından karakteri değişkene kopyala
+panservo.write(pan_derece); //Pan servo konumunu, seri porttan alınan ikinci komut baytının değerine ayarla.
+}
+ 
+}
